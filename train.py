@@ -14,7 +14,7 @@ def train_and_evaluate(dataset_name, train_data, test_data, device):
     test_loader = DataLoader(ImageDataset(test_data), batch_size=32, shuffle=False)
 
     num_classes = len(train_data.classes)
-    input_shape = (1, 128, 128)  # Example shape, modify as needed
+    input_shape = train_data[0][0].shape
     model = LaplacianNet(input_shape, num_classes).to(device)
     optimizer = optim.Adam(model.parameters(), lr=1e-4, amsgrad=True)
     criterion = margin_loss
@@ -32,8 +32,8 @@ def train_and_evaluate(dataset_name, train_data, test_data, device):
             labels = labels.to(device)
 
             optimizer.zero_grad()
-            outputs, reconstructed = model(inputs, labels)
-            loss = criterion(labels, outputs) + nn.L1Loss()(reconstructed, inputs[0])
+            outputs = model(inputs, labels)
+            loss = criterion(labels, outputs)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
@@ -50,7 +50,7 @@ def train_and_evaluate(dataset_name, train_data, test_data, device):
             for inputs, labels in test_loader:
                 inputs = [inp.to(device) for inp in inputs]
                 labels = labels.to(device)
-                outputs, _ = model(inputs)
+                outputs = model(inputs)
                 loss = criterion(labels, outputs)
                 val_loss += loss.item()
 
