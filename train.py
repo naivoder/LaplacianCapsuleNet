@@ -1,5 +1,5 @@
 from dataset import ImageDataset
-from networks import LaplacianNet, margin_loss
+from networks import LaplacianNet
 from utils import plot_confusion_matrix, plot_curves, plot_roc_auc
 
 import numpy as np
@@ -25,7 +25,7 @@ def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100
     
     model = LaplacianNet(input_shape, num_classes).to(device)
     optimizer = optim.Adam(model.parameters(), lr=1e-4, amsgrad=True)
-    criterion = nn.CrossEntropyLoss() # margin_loss
+    criterion = nn.CrossEntropyLoss()
 
     best_loss = float('inf')
     patience_counter = 0
