@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, Subset
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
 def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100):
@@ -57,7 +57,7 @@ def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100
         
         correct, total = 0, 0
         with torch.no_grad():
-            for inputs, labels in tqdm(val_loader):
+            for inputs, labels in val_loader:
                 inputs = [inp.to(device) for inp in inputs]
                 labels = labels.to(device)
                 labels = nn.functional.one_hot(labels, num_classes=num_classes).float()
@@ -72,14 +72,10 @@ def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100
                 correct += (pred == labels).sum().item()
                 total += labels.size(0)
 
-                # y_true.extend(labels.cpu().numpy())
-                # y_pred.extend(outputs.argmax(dim=1).cpu().numpy())
-
 
         val_loss /= len(val_loader)
         val_losses.append(val_loss)
         
-        # val_accuracy = accuracy_score(y_true, y_pred)
         val_accuracy = correct / total
         
 
@@ -107,7 +103,7 @@ def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100
 
     correct, total = 0, 0
     with torch.no_grad():
-        for inputs, labels in tqdm(test_loader):
+        for inputs, labels in test_loader:
             inputs = [inp.to(device) for inp in inputs]
             labels = labels.to(device)
             labels = nn.functional.one_hot(labels, num_classes=num_classes).float()
@@ -123,12 +119,19 @@ def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100
             y_pred.extend(outputs.argmax(dim=1).cpu().numpy())
 
 
+    test_accuracy = correct / total
+    
     y_true = np.array(y_true)
     y_pred = np.array(y_pred)
 
     cm_test = confusion_matrix(y_true, y_pred)
     plot_confusion_matrix(cm_test, dataset_name, 'test')
-
-    # plot_roc_auc(y_true, y_score, dataset_name)
+    
+    try: # don't kill program in case of failure...
+        plot_roc_auc(y_true, y_pred, dataset_name)
+    except:
+        pass
+    
+    print(f"Test Accuracy: {test_accuracy:4f}\n")
 
     return model
