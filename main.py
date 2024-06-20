@@ -39,14 +39,14 @@ test_datasets = {
     'CIFAR100': torchvision.datasets.CIFAR100(root='../data', train=False, download=True, transform=transform),
     'MNIST': torchvision.datasets.MNIST(root='../data', train=False, download=True, transform=transform),
     'FashionMNIST': torchvision.datasets.FashionMNIST(root='../data', train=False, download=True, transform=transform),
-    'SVHN': torchvision.datasets.SVHN(root='../data', split='test', download=True, transform=transform),
-    'STL10': torchvision.datasets.STL10(root='../data', split='test', download=True, transform=transform),
-    # 'ImageNet': torchvision.datasets.ImageNet(root='../data', split='train', download=True, transform=transform),
-    'Caltech101': torchvision.datasets.Caltech101(root='../data', download=False, transform=transform),
-    'Caltech256': torchvision.datasets.Caltech256(root='../data', download=False, transform=transform),
+    'SVHN': torchvision.datasets.SVHN(root='../data', split='test', train=False, download=True, transform=transform),
+    'STL10': torchvision.datasets.STL10(root='../data', split='test', train=False, download=True, transform=transform),
+    # 'ImageNet': torchvision.datasets.ImageNet(root='../data', split='test', download=True, transform=transform),
+    'Caltech101': torchvision.datasets.Caltech101(root='../data', download=False, train=False, transform=transform),
+    'Caltech256': torchvision.datasets.Caltech256(root='../data', download=False, train=False, transform=transform),
     'CelebA': torchvision.datasets.CelebA(root='../data', split='test', download=True, transform=transform),
-    # 'LSUN': torchvision.datasets.LSUN(root='../data', classes='train', transform=transform,),
-    'Omniglot': torchvision.datasets.Omniglot(root='../data', download=False, transform=transform),
+    # 'LSUN': torchvision.datasets.LSUN(root='../data', classes='test', transform=transform,),
+    'Omniglot': torchvision.datasets.Omniglot(root='../data', download=False, train=False, transform=transform),
     'OxfordIIITPet': torchvision.datasets.OxfordIIITPet(root='../data', split='test', download=True, transform=transform),
     # 'StanfordCars': torchvision.datasets.StanfordCars(root='../data', split='train', download=True, transform=transform),
     'SBD': torchvision.datasets.SBDataset(root='../data', image_set='val', download=False)
@@ -59,7 +59,7 @@ transform = transforms.Compose([
 ])
 
 for name in train_datasets.keys():
-    print(f"Training on {name} dataset")
+    print(f"\nTraining on {name} dataset")
     # test_data = torchvision.datasets.__dict__[name](root='./data', train=False, download=True, transform=transform)
     
     model = train_and_evaluate(name, train_datasets[name], test_datasets[name], device)
