@@ -116,7 +116,7 @@ def train_and_evaluate(dataset_name, train_data, test_data, device, n_epochs=100
             total += labels.size(0)
             
             y_true.extend(labels.cpu().numpy())
-            y_pred.extend(outputs.argmax(dim=1).cpu().numpy())
+            y_pred.extend(outputs.cpu().numpy())
 
 
     test_accuracy = correct / total
