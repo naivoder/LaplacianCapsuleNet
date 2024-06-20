@@ -1,1 +1,1 @@
-# LaplacianCapsuleNet
+# LaplacianNet
